@@ -2,6 +2,25 @@ module Bamboozled
   module API
     class Employee < Base
 
+      def initialize(subdomain, api_key, httparty_options = {}, tabular_data_tables = [])
+        super(subdomain, api_key, httparty_options)
+        tabular_data_tables += [:job_info, :employment_status, :compensation, :dependents, :contacts]
+        @tabular_data_tables = tabular_data_tables.uniq
+      end
+
+      def method_missing(method, *args)
+        # Tabular data
+        if @tabular_data_tables.include?(method) && args.length == 1
+          request(:get, "employees/#{args[0]}/tables/#{method.to_s.gsub(/_(.)/) {|e| $1.upcase}}")
+        else
+          super
+        end
+      end
+
+      def respond_to_missing?(method, *)
+        @tabular_data_tables.include?(method.to_s) || super
+      end
+
       def all(fields = nil)
         response = request(:get, "employees/directory")
 
@@ -29,13 +48,6 @@ module Bamboozled
 
         response = request(:get, "employees/changed", query: query)
         response["employees"]
-      end
-
-      # Tabular data
-      [:job_info, :employment_status, :compensation, :dependents, :contacts].each do |action|
-        define_method(action.to_s) do |argument_id|
-          request(:get, "employees/#{argument_id}/tables/#{action.to_s.gsub(/_(.)/) {|e| $1.upcase}}")
-        end
       end
 
       def time_off_estimate(employee_id, end_date)
