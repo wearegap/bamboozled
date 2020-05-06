@@ -2,7 +2,7 @@ require "spec_helper"
 
 RSpec.describe "Bamboozled" do
   it "takes HTTParty options as a parameter" do
-    expect(Bamboozled::Base).to receive(:new).with(subdomain: "x", api_key: "x", httparty_options: { log_format: :curl })
+    expect(Bamboozled::Base).to receive(:new).with(subdomain: "x", api_key: "x", httparty_options: { log_format: :curl }, tabular_data_tables:[] )
     Bamboozled.client(subdomain: "x", api_key: "x", httparty_options: { log_format: :curl })
   end
 
@@ -23,6 +23,20 @@ RSpec.describe "Bamboozled" do
   end
 
   it "works without HTTParty options provided" do
+    client = Bamboozled.client(subdomain: "x", api_key: "x")
+    response = File.new("spec/fixtures/one_employee.json")
+    stub_request(:any, /.*api\.bamboohr\.com.*/).to_return(response)
+
+    employee = client.employee.find(1234)
+    expect(employee["firstName"]).to eq "John"
+  end
+
+  it "takes tabular_data_tables options as a parameter" do
+    expect(Bamboozled::Base).to receive(:new).with(subdomain: "x", api_key: "x", httparty_options: {}, tabular_data_tables: [:job_info])
+    Bamboozled.client(subdomain: "x", api_key: "x", httparty_options: {}, tabular_data_tables: [:job_info])
+  end
+
+  it "works without tabularDataMethods options provided" do
     client = Bamboozled.client(subdomain: "x", api_key: "x")
     response = File.new("spec/fixtures/one_employee.json")
     stub_request(:any, /.*api\.bamboohr\.com.*/).to_return(response)

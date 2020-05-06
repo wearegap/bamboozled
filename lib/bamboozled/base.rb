@@ -2,14 +2,15 @@ module Bamboozled
   class Base
     attr_reader :request
 
-    def initialize(subdomain: nil, api_key: nil, httparty_options: {})
+    def initialize(subdomain: nil, api_key: nil, httparty_options: {}, tabular_data_tables: [])
       @subdomain, @api_key = subdomain
       @api_key = api_key
       @httparty_options = httparty_options
+      @tabular_data_tables = tabular_data_tables
     end
 
     def employee
-      @employee ||= Bamboozled::API::Employee.new(@subdomain, @api_key, @httparty_options)
+      @employee ||= Bamboozled::API::Employee.new(@subdomain, @api_key, @httparty_options, @tabular_data_tables)
     end
 
     def report

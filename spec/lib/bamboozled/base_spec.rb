@@ -2,11 +2,19 @@ require "spec_helper"
 
 RSpec.describe "Bamboozled::Base" do
   let(:base) { Bamboozled::Base.new(subdomain: "x", api_key: "x", httparty_options: {log_format: :curl}) }
+  let(:employee_base) { Bamboozled::Base.new(subdomain: "x", api_key: "x", httparty_options: {},
+                                             tabular_data_tables: [:job_info]) }
 
   it "passes HTTParty options to Bamboozled::API::Employee constructor" do
-    expect(Bamboozled::API::Employee).to receive(:new).with("x", "x", { log_format: :curl })
+    expect(Bamboozled::API::Employee).to receive(:new).with("x", "x", { log_format: :curl }, [])
     base.employee
   end
+
+  it "passes tabular_data_tables options to Bamboozled::API::Employee constructor" do
+    expect(Bamboozled::API::Employee).to receive(:new).with("x", "x", {}, [:job_info])
+    employee_base.employee
+  end
+
   it "passes HTTParty options to Bamboozled::API::Report constructor" do
     expect(Bamboozled::API::Report).to receive(:new).with("x", "x", { log_format: :curl })
     base.report

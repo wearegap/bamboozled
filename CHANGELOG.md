@@ -8,6 +8,15 @@
 
 ### Bug Fixes
 
+## 0.3.1 (unreleased)
+
+### New Features
+
+- Allowing to set the tabular_data_tables dynamically instead of just using the ones provided so that it allow developer to retrieve custom information. At this time it is currently in **beta**. ([@rrodriguez-gap][])
+ 
+### Changes
+- Overwritting the method_missing default functionality to dynamically generate the actions 
+
 ## 0.3.0 (2019-08-15)
 
 ### New Features
@@ -60,3 +69,4 @@
 [@nlively]: https://github.com/nlively
 [@danhealy]: https://github.com/danhealy
 [@cabello]: https://github.com/cabello
+[@rrodriguez-gap]: https://github.com/rrodriguez-gap
